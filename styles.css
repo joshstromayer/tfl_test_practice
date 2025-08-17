@@ -100,3 +100,77 @@
   footer { margin-top: 28px; color: var(--muted); font-size: 14px; }
   .examples-list li { margin-bottom: 8px; }
 
+/* Base: already mobile-friendly (single column) */
+
+/* Small screens (up to 480px) */
+@media (max-width: 480px) {
+    body {
+      font-size: 15px;
+      padding: 12px;
+    }
+  
+    .card {
+      padding: 14px;
+      margin: 10px 0;
+    }
+  
+    textarea {
+      font-size: 14px;
+      padding: 8px;
+    }
+  
+    .btn {
+      width: 100%;          /* full width buttons for easier tapping */
+      font-size: 15px;
+      padding: 12px;
+    }
+  
+    .pill {
+      font-size: 13px;
+      padding: 4px 8px;
+    }
+  
+    .blur {
+      font-size: 14px;
+    }
+  }
+  
+  /* Medium screens (481px–768px) */
+  @media (min-width: 481px) and (max-width: 768px) {
+    body {
+      font-size: 16px;
+      padding: 16px;
+    }
+  
+    .card {
+      padding: 16px;
+      margin: 12px 0;
+    }
+  
+    textarea {
+      font-size: 15px;
+    }
+  
+    .btn {
+      font-size: 16px;
+      padding: 10px 14px;
+    }
+  
+    .pill {
+      font-size: 14px;
+      padding: 5px 10px;
+    }
+  }
+  
+  /* Large screens (769px and up) */
+  @media (min-width: 769px) {
+    body {
+      max-width: 720px;     /* center content in middle of page */
+      margin: auto;
+    }
+  
+    .card {
+      margin: 16px 0;
+    }
+  }
+  
