@@ -34,12 +34,20 @@ function toggleBlur(el){
       <div class="card">
         <div class="pill">Paragraph ${idx+1}</div>
         <p class="muted" style="margin-top:8px;">Fix the text below.</p>
+  
+        <!-- Always-visible faulty text -->
+        <div class="faulty-box" style="margin:8px 0; padding:12px; border:1px dashed rgba(148,163,184,0.35); border-radius:10px; background: rgba(148,163,184,0.06);">
+          <p style="margin:0 0 6px 0;"><b>Original (with errors):</b></p>
+          <p style="margin:0;">${faulty}</p>
+        </div>
+  
+        <!-- User rewrite area -->
         <textarea rows="6" placeholder="Rewrite the paragraph with correct grammar and punctuation…" aria-label="Rewrite paragraph ${idx+1}" id="${id}-input"></textarea>
+  
+        <!-- Model answer behind Reveal -->
         <div class="answer">
           <button class="btn small" onclick="toggleBlur(document.getElementById('${id}-ans'))">Reveal Answer</button>
           <div class="blur" id="${id}-ans">
-            <p><b>Original (with errors):</b></p>
-            <p>${faulty}</p>
             <p><b>Model correction:</b></p>
             <p>${fixed}</p>
             <p class="muted"><b>Why:</b> ${explain}</p>
@@ -48,6 +56,7 @@ function toggleBlur(el){
       </div>
     `;
   }
+  
   
   function makeHomophoneItem(idx, stem, choices, correct, tip){
     const id = 'homo-'+idx;
