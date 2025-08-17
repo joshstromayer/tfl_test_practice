@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TfL Customer Service Assessment Prep</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header>
+  <nav>
+    <a href="#home" class="active">Home</a>
+    <a href="#english">English Proofreading</a>
+    <a href="#timetable">Timetable & Map</a>
+    <a href="#tickets">Ticket Checking</a>
+    <a href="#exam">Exam Strategy</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section id="home" class="hero">
+    <div class="card">
+      <h1>Prep for the TfL Customer Service Assessment</h1>
+      <p class="lead">Fast, focused practice on the three big areas you mentioned: <b>English proofreading</b>, <b>timetables/maps</b>, and <b>ticket validity</b>. Designed to make the hard bit (English) feel easy by exam day.</p>
+      <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+        <a class="btn" href="#english">Start with English</a>
+        <a class="btn" href="#timetable">Try Timetable Qs</a>
+        <a class="btn" href="#tickets">Ticket Scenarios</a>
+      </div>
+      <p class="muted" style="margin-top:12px;">Tip: Use <span class="kbd">Tab</span> to move between inputs; press <span class="kbd">Reveal Answer</span> to see model answers and explanations.</p>
+    </div>
+    <div class="card">
+      <h2>Skills you’ll build</h2>
+      <ul class="examples-list">
+        <li><b>Spot & Fix</b>: punctuation, capital letters, apostrophes, subject–verb agreement, confusing words (there/their/they’re), run-ons.</li>
+        <li><b>Timetable/Map</b>: find the fastest route, number of stops, interchange logic, earliest/latest arrival.</li>
+        <li><b>Ticket Validity</b>: zones, dates & times, concessions, photocard rules, damage/defect handling, revenue protection basics.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ENGLISH -->
+  <section id="english" class="card">
+    <h2>English Proofreading</h2>
+    <p class="lead">These mirror the “check and correct the mistakes” task. Write the corrected sentence or paragraph, then compare with the model answer and explanation.</p>
+
+    <h3>Part A — Fix the sentence (quickfire)</h3>
+    <div class="grid two" id="quickfire"></div>
+
+    <h3 style="margin-top:18px;">Part B — Correct the paragraph</h3>
+    <div id="paragraphs" class="grid"></div>
+
+    <h3 style="margin-top:18px;">Part C — Choose the correct word</h3>
+    <div id="homophones" class="grid two"></div>
+  </section>
+
+  <!-- TIMETABLE -->
+  <section id="timetable" class="card">
+    <h2>Timetable & Map-Style Questions</h2>
+    <p class="lead">Use the small schedule below to answer practical questions (like you’d get on a basic map/timetable task).</p>
+    <div class="grid two">
+      <div>
+        <h3>Mini Timetable</h3>
+        <table aria-label="Mini timetable">
+          <thead>
+            <tr><th>Service</th><th>From</th><th>To</th><th>Depart</th><th>Arrive</th><th>Stops</th></tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div>
+        <h3>Questions</h3>
+        <ol id="tt-qs"></ol>
+      </div>
+    </div>
+    <div class="answer" id="tt-answers" style="margin-top:12px;">
+      <button class="btn small" onclick="toggleBlur(this.nextElementSibling)">Reveal Answers</button>
+      <div class="blur" id="tt-soln"></div>
+    </div>
+  </section>
+
+  <!-- TICKETS -->
+  <section id="tickets" class="card">
+    <h2>Ticket Checking Scenarios</h2>
+    <p class="lead">Decide if the ticket is <b>Valid</b> or <b>Invalid</b>, and state the reason. Then reveal the suggested response.</p>
+    <div id="ticket-cases" class="grid two"></div>
+  </section>
+
+  <!-- EXAM STRATEGY -->
+  <section id="exam" class="card">
+    <h2>Exam Strategy (Quick Wins)</h2>
+    <ul class="examples-list">
+      <li><b>Slow down on punctuation</b>: full stops, commas after long openers, apostrophes for possession (customer’s card / customers’ cards).</li>
+      <li><b>Read aloud in your head</b>: if you run out of breath, it’s probably a run-on sentence—split it.</li>
+      <li><b>Capital letters</b>: start of sentences, days, months, job titles when used before a name (e.g., Station Manager Khan).</li>
+      <li><b>Agreement</b>: singular subject → singular verb (<i>the train <u>arrives</u></i>), plural subject → plural verb (<i>the trains <u>arrive</u></i>).</li>
+      <li><b>Homophones</b>: its/it’s, your/you’re, there/their/they’re. If you can say “it is”, use <i>it’s</i>.</li>
+      <li><b>Numbers & time</b>: be consistent (09:05 not 9.05); write clearly.</li>
+    </ul>
+    <p class="muted">Aim for accuracy over speed. One perfect paragraph beats three rushed ones.</p>
+  </section>
+
+  <footer>
+    Built for focused practice. No affiliation with TfL.
+  </footer>
+</main>
+
+<script src="app.js" defer></script>
+</body>
+</html>
