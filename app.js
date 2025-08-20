@@ -24,6 +24,9 @@ function toggleBlur(el){
             <p class="muted"><b>Why:</b> ${explain}</p>
           </div>
         </div>
+        <div style="margin-top:8px;">
+          <button class="btn small" onclick="markDone('qf',${idx})">✓ Mark as done</button>
+        </div>
       </div>
     `;
   }
@@ -35,17 +38,14 @@ function toggleBlur(el){
         <div class="pill">Paragraph ${idx+1}</div>
         <p class="muted" style="margin-top:8px;">Fix the text below.</p>
   
-        <!-- Always-visible faulty text -->
         <div class="faulty-box" style="margin:8px 0; padding:12px; border:1px dashed rgba(148,163,184,0.35); border-radius:10px; background: rgba(148,163,184,0.06);">
           <p style="margin:0 0 6px 0;"><b>Original (with errors):</b></p>
           <p style="margin:0;">${faulty}</p>
         </div>
   
-        <!-- User rewrite area -->
         <textarea rows="6" placeholder="Rewrite the paragraph with correct grammar and punctuation…" aria-label="Rewrite paragraph ${idx+1}" id="${id}-input"></textarea>
   
-        <!-- Model answer behind Reveal -->
-        <div class="answer">
+        <div class="answer" style="margin-top:8px;">
           <button class="btn small" onclick="toggleBlur(document.getElementById('${id}-ans'))">Reveal Answer</button>
           <div class="blur" id="${id}-ans">
             <p><b>Model correction:</b></p>
@@ -53,10 +53,13 @@ function toggleBlur(el){
             <p class="muted"><b>Why:</b> ${explain}</p>
           </div>
         </div>
+  
+        <div style="margin-top:8px;">
+          <button class="btn small" onclick="markDone('para',${idx})">✓ Mark as done</button>
+        </div>
       </div>
     `;
   }
-  
   
   function makeHomophoneItem(idx, stem, choices, correct, tip){
     const id = 'homo-'+idx;
@@ -70,9 +73,13 @@ function toggleBlur(el){
         </div>
         <button class="btn small" onclick="checkChoice('${id}','${correct}','${tip}')">Check</button>
         <p id="${id}-res" class="muted" style="margin-top:8px;"></p>
+  
+        <div style="margin-top:8px;">
+          <button class="btn small" onclick="markDone('homo',${idx})">✓ Mark as done</button>
+        </div>
       </div>
     `;
-  }
+  }  
   
   function checkChoice(id, correct, tip){
     const sel = document.querySelector('input[name="'+id+'"]:checked');
@@ -85,6 +92,20 @@ function toggleBlur(el){
     }
   }
   window.checkChoice = checkChoice; // for inline onclick
+
+// Mark as done + persist
+function markDone(type, idx){
+  const key = type + "-done";
+  const done = JSON.parse(localStorage.getItem(key) || "[]");
+  if(!done.includes(idx)){
+    done.push(idx);
+    localStorage.setItem(key, JSON.stringify(done));
+  }
+  render(); // re-render to hide the item
+}
+window.markDone = markDone; // if you're using inline onclick
+
+
   
   // --- data ---
   const quickfire = [
@@ -137,6 +158,186 @@ function toggleBlur(el){
       p: "you must validate your oyster before enter the gateline",
       a: "You must validate your Oyster before entering the gateline.",
       e: "Capitalise brand names (Oyster) and use the -ing form after 'before' when describing the action."
+    },
+    {
+      p: "i seen the passenger drop there wallet on the plat form",
+      a: "I saw the passenger drop their wallet on the platform.",
+      e: "Past tense 'saw', their/there, platform spelling, capitalisation."
+    },
+    {
+      p: "staff was told too check the fire alarm every morning",
+      a: "Staff were told to check the fire alarm every morning.",
+      e: "Staff = plural, so 'were'; too/to confusion."
+    },
+    {
+      p: "please use the stairs lift is out of order",
+      a: "Please use the stairs. The lift is out of order.",
+      e: "Two separate sentences needed."
+    },
+    {
+      p: "customers should of validated there tickets",
+      a: "Customers should have validated their tickets.",
+      e: "Common mistake: 'should of' → 'should have'; their/there."
+    },
+    {
+      p: "Were closing the station at 11 pm for cleaning",
+      a: "We’re closing the station at 23:00 for cleaning.",
+      e: "We’re vs were; consistent 24-hour clock."
+    },
+    {
+      p: "can you help me find my seat its number 42",
+      a: "Can you help me find my seat? It’s number 42.",
+      e: "Capitalisation; question mark; It’s = it is."
+    },
+    {
+      p: "were happy to announce the lift is back in service",
+      a: "We’re happy to announce the lift is back in service.",
+      e: "We’re = we are; capitalisation."
+    },
+    {
+      p: "please leave youre bags unattended at your own risk",
+      a: "Please do not leave your bags unattended; it is at your own risk.",
+      e: "Negative imperative; your/you’re confusion."
+    },
+    {
+      p: "station close at 11 pm tonight",
+      a: "The station closes at 23:00 tonight.",
+      e: "Subject–verb agreement; consistent 24-hour time."
+    },
+    {
+      p: "the toilets is on the right",
+      a: "The toilets are on the right.",
+      e: "Subject–verb agreement."
+    },
+    {
+      p: "passangers are adviced to stand clear of the doors",
+      a: "Passengers are advised to stand clear of the doors.",
+      e: "Spelling (passengers), verb form (advised)."
+    },
+    {
+      p: "dont cross the track its dangerus",
+      a: "Don’t cross the track; it’s dangerous.",
+      e: "Contraction apostrophes; spelling (dangerous)."
+    },
+    {
+      p: "i will meet you their at 9 am",
+      a: "I will meet you there at 09:00.",
+      e: "Their/there confusion; time formatting."
+    },
+    {
+      p: "there was less people waiting today",
+      a: "There were fewer people waiting today.",
+      e: "Less/fewer distinction; subject–verb agreement."
+    },
+    {
+      p: "tickets must of been validated before boarding",
+      a: "Tickets must have been validated before boarding.",
+      e: "Must have, not must of."
+    },
+    {
+      p: "the gates is closing please stand back",
+      a: "The gates are closing. Please stand back.",
+      e: "Verb agreement; split sentences."
+    },
+    {
+      p: "we apologise for delay train broke down",
+      a: "We apologise for the delay; the train broke down.",
+      e: "Article needed; semicolon for run-on."
+    },
+    {
+      p: "customers should follow signs its on platform three",
+      a: "Customers should follow the signs; it’s on platform three.",
+      e: "Article needed; it’s = it is."
+    },
+    {
+      p: "staff were told check the alarms",
+      a: "Staff were told to check the alarms.",
+      e: "Infinitive needs 'to'."
+    },
+    {
+      p: "the ticket costed five pounds",
+      a: "The ticket cost five pounds.",
+      e: "Irregular verb: cost, not costed."
+    },
+    {
+      p: "please be quite in the waiting room",
+      a: "Please be quiet in the waiting room.",
+      e: "Spelling mistake: quiet/quite."
+    },
+    {
+      p: "im sure your going the right way",
+      a: "I’m sure you’re going the right way.",
+      e: "Contractions and apostrophes (I’m, you’re)."
+    },
+    {
+      p: "she gave me advise about travel",
+      a: "She gave me advice about travel.",
+      e: "Advice (noun) vs advise (verb)."
+    },
+    {
+      p: "the lift arent working properly",
+      a: "The lift isn’t working properly.",
+      e: "Subject–verb agreement; contraction."
+    },
+    {
+      p: "there tickets was invalid",
+      a: "Their tickets were invalid.",
+      e: "Their/there confusion; verb agreement."
+    },
+    {
+      p: "the customers didnt had enough balance",
+      a: "The customers didn’t have enough balance.",
+      e: "Past tense auxiliary: didn’t + have."
+    },
+    {
+      p: "i seen the bus leave already",
+      a: "I saw the bus leave already.",
+      e: "Seen vs saw (simple past)."
+    },
+    {
+      p: "the station is busyer than usual",
+      a: "The station is busier than usual.",
+      e: "Comparative spelling: busier."
+    },
+    {
+      p: "were expecting a delay due too signalling issue",
+      a: "We’re expecting a delay due to a signalling issue.",
+      e: "We’re vs were; too/to confusion; article needed."
+    },
+    {
+      p: "the annoucement wasnt clear enough",
+      a: "The announcement wasn’t clear enough.",
+      e: "Spelling (announcement); apostrophe."
+    },
+    {
+      p: "the ticket machine dont work today",
+      a: "The ticket machine doesn’t work today.",
+      e: "Subject–verb agreement; contraction."
+    },
+    {
+      p: "were not allow to enter without staff permission",
+      a: "We’re not allowed to enter without staff permission.",
+      e: "Past participle: allowed; we’re vs were."
+    },
+    {
+      p: "the passanger said there going home",
+      a: "The passenger said they’re going home.",
+      e: "Passenger spelling; there/they’re confusion."
+    },
+    {
+      p: "please be awear of slippery floors",
+      a: "Please be aware of slippery floors.",
+      e: "Awear/aware confusion."
+    },
+    {
+      p: "we was late for the meeting",
+      a: "We were late for the meeting.",
+      e: "Verb agreement: we were."
+    },
+    {
+      p: "the staff dont knows the answer",
+      a: "The staff don’t know the answer.",
+      e: "Staff treated as plural; know not knows."
     }
   ];
   
@@ -150,6 +351,76 @@ function toggleBlur(el){
       faulty: "we apologise for any inconvenience please note mobility assistance is available however you need to contact the station team atleast 24 hours before your journey",
       fixed: "We apologise for any inconvenience. Please note, mobility assistance is available; however, you need to contact the station team at least 24 hours before your journey.",
       explain: "Split run-ons into sentences; comma after introductory phrase; semicolon before conjunctive adverb 'however'; 'at least' is two words."
+    },
+    {
+      faulty: "due to scheduled engineering works the district line will be part suspended between west kensington and earls court from 21:00 on friday services will resume at 06:00 on saturday customers should allow extra time and follow staff advise signs will be posted at the entrance",
+      fixed: "Due to scheduled engineering works, the District line will be part-suspended between West Kensington and Earl’s Court from 21:00 on Friday. Services will resume at 06:00 on Saturday. Customers should allow extra time and follow staff advice. Signs will be posted at the entrance.",
+      explain: "Capitalisation of proper nouns; hyphen in compound adjective (part-suspended); punctuation to split sentences; advice not advise."
+    },
+    {
+      faulty: "we apologise for any inconvenience please note mobility assistance is available however you need to contact the station team atleast 24 hours before your journey",
+      fixed: "We apologise for any inconvenience. Please note, mobility assistance is available; however, you need to contact the station team at least 24 hours before your journey.",
+      explain: "Split run-ons; semicolon before 'however'; 'at least' is two words."
+    },
+    {
+      faulty: "for your safety we ask all passengers to remain behind the yellow line dont cross until the train has stopped doors have opened and staff have confirmed it is safe",
+      fixed: "For your safety, we ask all passengers to remain behind the yellow line. Do not cross until the train has stopped, the doors have opened, and staff have confirmed it is safe.",
+      explain: "Comma after introductory phrase; separate sentences; consistent imperatives; Oxford comma improves clarity."
+    },
+    {
+      faulty: "customers are reminded smoking eating and drinking is not allow anywhere in the station please dispose rubbish responsibly",
+      fixed: "Customers are reminded that smoking, eating, and drinking are not allowed anywhere in the station. Please dispose of rubbish responsibly.",
+      explain: "Parallel structure; verb agreement (are not allowed); add missing 'of'; punctuation."
+    },
+    {
+      faulty: "customers is requested to keep noise levels low in the waiting area this include phone conversations music and group discussions thank you for your cooperation",
+      fixed: "Customers are requested to keep noise levels low in the waiting area. This includes phone conversations, music, and group discussions. Thank you for your cooperation.",
+      explain: "Verb agreement; split run-ons; parallel list punctuation."
+    },
+    {
+      faulty: "due to the bad wheather trains may be delayed we apologies for any inconvenience caused passengers should check displays for updates",
+      fixed: "Due to the bad weather, trains may be delayed. We apologise for any inconvenience caused. Passengers should check displays for updates.",
+      explain: "Spelling (weather); punctuation; capitalisation."
+    },
+    {
+      faulty: "the last train to richmond leave at 23:30 on weekdays please make sure you board before this time otherwise you may need alternative travel",
+      fixed: "The last train to Richmond leaves at 23:30 on weekdays. Please make sure you board before this time; otherwise, you may need alternative travel.",
+      explain: "Capitalisation; subject–verb agreement; semicolon for conjunctive adverb."
+    },
+    {
+      faulty: "items found unattended will be removed and may not return to there owner please keep your belongings with you",
+      fixed: "Items found unattended will be removed and may not be returned to their owner. Please keep your belongings with you.",
+      explain: "Verb form; there/their confusion; split run-on."
+    },
+    {
+      faulty: "for safety reasons pushchairs must be fold before entering the escalator staff will assist if required",
+      fixed: "For safety reasons, pushchairs must be folded before entering the escalator. Staff will assist if required.",
+      explain: "Verb form; punctuation; comma after introductory phrase."
+    },
+    {
+      faulty: "passangers are not aloud beyond this point unless accompanied by staff failure to follow rules may result in removal",
+      fixed: "Passengers are not allowed beyond this point unless accompanied by staff. Failure to follow the rules may result in removal.",
+      explain: "Spelling (passengers, allowed); split run-on; missing article."
+    },
+    {
+      faulty: "there is currently engineering work effecting the victoria line services will resume normaly at 05:30 on monday",
+      fixed: "There is currently engineering work affecting the Victoria line. Services will resume normally at 05:30 on Monday.",
+      explain: "Affecting/effecting confusion; capitalisation; spelling (normally)."
+    },
+    {
+      faulty: "please note dogs must be keep on a lead at all times in the station failure may lead to penalty",
+      fixed: "Please note, dogs must be kept on a lead at all times in the station. Failure to do so may lead to a penalty.",
+      explain: "Verb form; add 'to do so'; article before penalty."
+    },
+    {
+      faulty: "customers with valid tickits can enter through gate b however staff will check randomly",
+      fixed: "Customers with valid tickets can enter through Gate B; however, staff will check randomly.",
+      explain: "Spelling (tickets); capitalisation; semicolon before 'however'."
+    },
+    {
+      faulty: "all lost properties is stored in the office customers may collect items with proof of ownership",
+      fixed: "All lost property is stored in the office. Customers may collect items with proof of ownership.",
+      explain: "‘Lost property’ treated as singular; punctuation."
     }
   ];
   
@@ -158,7 +429,18 @@ function toggleBlur(el){
     { stem: "The train has (departed / deported) from Platform 3.", choices:["departed","deported"], correct:"departed", tip:"'Departed' means left; 'deported' is removed from a country." },
     { stem: "Customers must (buy / by) a valid ticket before travel.", choices:["buy","by"], correct:"buy", tip:"'Buy' = purchase; 'by' = preposition." },
     { stem: "Please mind (there / their / they’re) belongings.", choices:["there","their","they’re"], correct:"their", tip:"Possessive form for belongings." },
-    { stem: "If (it’s / its) urgent, speak to a member of staff.", choices:["it’s","its"], correct:"it’s", tip:"'it’s' = 'it is'; 'its' is possessive." }
+    { stem: "If (it’s / its) urgent, speak to a member of staff.", choices:["it’s","its"], correct:"it’s", tip:"'it’s' = 'it is'; 'its' is possessive." },
+    { stem: "Please (accept / except) our apologies for the delay.", choices:["accept","except"], correct:"accept", tip:"'Accept' = receive/agree; 'except' = apart from." },
+    { stem: "Your train is due later (than / then) expected.", choices:["than","then"], correct:"than", tip:"'Than' for comparison; 'then' for sequence/time." },
+    { stem: "The ticket machine is out of (order / ordour).", choices:["order","ordour"], correct:"order", tip:"'Order' = correct word; 'odour' = smell." },
+    { stem: "Please take a (complement / compliment) slip at the desk.", choices:["complement","compliment"], correct:"compliment", tip:"Compliment = polite remark; complement = completes something." },
+    { stem: "The escalator is (stationary / stationery) for repairs.", choices:["stationary","stationery"], correct:"stationary", tip:"Stationary = not moving; stationery = paper, pens, etc." },
+    { stem: "He may (lose / loose) his ticket if not careful.", choices:["lose","loose"], correct:"lose", tip:"Lose = misplace; loose = not tight." },
+    { stem: "This update will not (affect / effect) your journey.", choices:["affect","effect"], correct:"affect", tip:"Affect = verb (influence); effect = noun (result)." },
+    { stem: "The Oyster reader is not working, please try (again / gain).", choices:["again","gain"], correct:"again", tip:"'Again' means once more; 'gain' = obtain." },
+    { stem: "If (it’s / its) urgent, speak to staff immediately.", choices:["it’s","its"], correct:"it’s", tip:"It’s = it is; its = possessive." },
+    { stem: "Please mind (there / their / they’re) luggage at all times.", choices:["there","their","they’re"], correct:"their", tip:"Possessive form for belongings." }
+  
   ];
   
   const timetable = [
@@ -217,50 +499,57 @@ function toggleBlur(el){
   function render(){
     // Quickfire
     const qf = document.getElementById('quickfire');
-    qf.innerHTML = quickfire.map((q,i)=> makeQuickfireItem(i,q.p,q.a,q.e)).join('');
+    const doneQF = JSON.parse(localStorage.getItem("qf-done") || "[]");
+    qf.innerHTML = quickfire
+      .map((q,i)=> doneQF.includes(i) ? "" : makeQuickfireItem(i,q.p,q.a,q.e))
+      .join('');
   
     // Paragraphs
     const parasWrap = document.getElementById('paragraphs');
-    parasWrap.innerHTML = paras.map((q,i)=> makeParagraphItem(i,q.faulty,q.fixed,q.explain)).join('');
+    const donePara = JSON.parse(localStorage.getItem("para-done") || "[]");
+    parasWrap.innerHTML = paras
+      .map((q,i)=> donePara.includes(i) ? "" : makeParagraphItem(i,q.faulty,q.fixed,q.explain))
+      .join('');
   
     // Homophones
     const homoWrap = document.getElementById('homophones');
-    homoWrap.innerHTML = homos.map((h,i)=> makeHomophoneItem(i,h.stem,h.choices,h.correct,h.tip)).join('');
+    const doneHomo = JSON.parse(localStorage.getItem("homo-done") || "[]");
+    homoWrap.innerHTML = homos
+      .map((h,i)=> doneHomo.includes(i) ? "" : makeHomophoneItem(i,h.stem,h.choices,h.correct,h.tip))
+      .join('');
   
-    // Timetable rows
-    const tbody = document.getElementById('tbody');
-    tbody.innerHTML = timetable.map(r=>`
-      <tr><td>${r.svc}</td><td>${r.from}</td><td>${r.to}</td><td>${r.depart}</td><td>${r.arrive}</td><td>${r.stops}</td></tr>
-    `).join('');
-  
-    // Timetable Qs + model answers
-    document.getElementById('tt-qs').innerHTML = ttQs.map(q=>`<li>${q}</li>`).join('');
-    document.getElementById('tt-soln').innerHTML = '<ol>' + ttAns.map(a=>`<li>${a}</li>`).join('') + '</ol>';
-  
-    // Ticket cases
-    const tc = document.getElementById('ticket-cases');
-    tc.innerHTML = tickets.map((t,i)=>`
-      <div class="card">
-        <div class="pill">Case ${i+1}</div>
-        <h3 style="margin-top:8px;">${t.title}</h3>
-        <p class="muted">${t.ask}</p>
-        <textarea rows="3" placeholder="Type your decision and reason…"></textarea>
-        <div class="answer">
-          <button class="btn small" onclick="toggleBlur(this.nextElementSibling)">Reveal Answer</button>
-          <div class="blur"><p>${t.answer}</p></div>
-        </div>
-      </div>
-    `).join('');
-  
-    // Nav active state
-    const links = document.querySelectorAll('nav a');
-    function setActive(){
-      const hash = window.location.hash || '#home';
-      links.forEach(a=> a.classList.toggle('active', a.getAttribute('href')===hash));
-    }
-    window.addEventListener('hashchange', setActive);
-    setActive();
-  }
-  
+        // Timetable rows
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = timetable.map(r=>`
+          <tr><td>${r.svc}</td><td>${r.from}</td><td>${r.to}</td><td>${r.depart}</td><td>${r.arrive}</td><td>${r.stops}</td></tr>
+        `).join('');
+      
+        // Timetable Qs + model answers
+        document.getElementById('tt-qs').innerHTML = ttQs.map(q=>`<li>${q}</li>`).join('');
+        document.getElementById('tt-soln').innerHTML = '<ol>' + ttAns.map(a=>`<li>${a}</li>`).join('') + '</ol>';
+      
+        // Ticket cases
+        const tc = document.getElementById('ticket-cases');
+        tc.innerHTML = tickets.map((t,i)=>`
+          <div class="card">
+            <div class="pill">Case ${i+1}</div>
+            <h3 style="margin-top:8px;">${t.title}</h3>
+            <p class="muted">${t.ask}</p>
+            <textarea rows="3" placeholder="Type your decision and reason…"></textarea>
+            <div class="answer">
+              <button class="btn small" onclick="toggleBlur(this.nextElementSibling)">Reveal Answer</button>
+              <div class="blur"><p>${t.answer}</p></div>
+            </div>
+          </div>
+        `).join('');
+      
+        // Nav active state
+        const links = document.querySelectorAll('nav a');
+        function setActive(){
+          const hash = window.location.hash || '#home';
+          links.forEach(a=> a.classList.toggle('active', a.getAttribute('href')===hash));
+        }
+        window.addEventListener('hashchange', setActive);
+        setActive();
+  }  
   document.addEventListener('DOMContentLoaded', render);
-  
